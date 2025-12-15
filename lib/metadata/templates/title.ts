@@ -7,7 +7,7 @@ import config from 'configs/app';
 const dappEntityName = (getFeaturePayload(config.features.marketplace)?.titles.entity_name ?? '').toLowerCase();
 
 const TEMPLATE_MAP: Record<Route['pathname'], string> = {
-  '/': '%network_name% blockchain explorer - View %network_name% stats',
+  '/': 'VinuExplorer - The official block explorer for VinuChain',
   '/txs': '%network_name% transactions - %network_name% explorer',
   '/internal-txs': '%network_name% internal transactions - %network_name% explorer',
   '/txs/kettle/[hash]': '%network_name% kettle %hash% transactions',
@@ -110,7 +110,7 @@ const TEMPLATE_MAP_ENHANCED: Partial<Record<Route['pathname'], string>> = {
 
 export function make(pathname: Route['pathname'], isEnriched = false) {
   const template = (isEnriched ? TEMPLATE_MAP_ENHANCED[pathname] : undefined) ?? TEMPLATE_MAP[pathname];
-  const postfix = config.meta.promoteBlockscoutInTitle ? ' | Blockscout' : '';
+  const postfix = pathname !== '/' ? ' | VinuExplorer' : '';
 
   return (template + postfix).trim();
 }
