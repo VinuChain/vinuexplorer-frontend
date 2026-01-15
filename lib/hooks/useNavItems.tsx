@@ -260,6 +260,21 @@ export default function useNavItems(): ReturnType {
       },
     ].filter(Boolean);
 
+    const validatorsNavItems = [
+      {
+        text: 'Validators',
+        url: 'https://validator.v9000.dev/',
+        icon: 'validator',
+        isActive: false,
+      },
+      {
+        text: 'Staking',
+        url: 'https://stake.vinu.cash/',
+        icon: 'payment_link',
+        isActive: false,
+      },
+    ].filter(Boolean);
+
     const statsNavItem = (() => {
       const uptimeItem = {
         text: 'Uptime',
@@ -346,6 +361,12 @@ export default function useNavItems(): ReturnType {
         icon: 'token',
         isActive: tokensNavItems.flat().some(item => isInternalItem(item) && item.isActive),
         subItems: tokensNavItems,
+      },
+      {
+        text: 'Validators',
+        icon: 'validator',
+        isActive: false,
+        subItems: validatorsNavItems,
       },
       marketplaceFeature.isEnabled ? {
         text: marketplaceFeature.titles.menu_item,
