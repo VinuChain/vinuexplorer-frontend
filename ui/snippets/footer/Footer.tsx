@@ -23,8 +23,8 @@ import getApiVersionUrl from './utils/getApiVersionUrl';
 
 const MAX_LINKS_COLUMNS = 4;
 
-const FRONT_VERSION_URL = `https://github.com/blockscout/frontend/tree/${config.UI.footer.frontendVersion}`;
-const FRONT_COMMIT_URL = `https://github.com/blockscout/frontend/commit/${config.UI.footer.frontendCommit}`;
+const FRONT_VERSION_URL = `https://github.com/VinuChain/vinuexplorer-backend/tree/${config.UI.footer.frontendVersion}`;
+const FRONT_COMMIT_URL = `https://github.com/VinuChain/vinuexplorer-backend/commit/${config.UI.footer.frontendCommit}`;
 
 const Footer = () => {
 
@@ -138,7 +138,7 @@ const Footer = () => {
           )}
           {frontendLink && (
             <Text>
-              Frontend: {frontendLink}
+              Deployed: {frontendLink}
             </Text>
           )}
         </Box>
