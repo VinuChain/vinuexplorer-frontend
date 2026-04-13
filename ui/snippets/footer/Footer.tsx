@@ -23,8 +23,6 @@ import getApiVersionUrl from './utils/getApiVersionUrl';
 
 const MAX_LINKS_COLUMNS = 4;
 
-const FRONT_VERSION_URL = `https://github.com/VinuChain/vinuexplorer-frontend/tree/${config.UI.footer.frontendVersion}`;
-const FRONT_COMMIT_URL = `https://github.com/VinuChain/vinuexplorer-frontend/commit/${config.UI.footer.frontendCommit}`;
 
 const Footer = () => {
 
@@ -70,17 +68,7 @@ const Footer = () => {
     },
   ];
 
-  const frontendLink = (() => {
-    if (config.UI.footer.frontendVersion) {
-      return <Link href={FRONT_VERSION_URL} external noIcon>{config.UI.footer.frontendVersion}</Link>;
-    }
-
-    if (config.UI.footer.frontendCommit) {
-      return <Link href={FRONT_COMMIT_URL} external noIcon>{config.UI.footer.frontendCommit}</Link>;
-    }
-
-    return null;
-  })();
+  const frontendLink = config.UI.footer.frontendCommit || null;
 
   const fetch = useFetch();
 
