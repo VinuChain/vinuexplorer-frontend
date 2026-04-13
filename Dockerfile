@@ -150,6 +150,13 @@ RUN apk add --no-cache --upgrade bash curl jq unzip
 ### APP
 WORKDIR /app
 
+# Expose build-time git metadata as runtime env vars so make_envs_script.sh
+# can inject them into window.__envs for the footer version display.
+ARG GIT_COMMIT_SHA
+ENV NEXT_PUBLIC_GIT_COMMIT_SHA=$GIT_COMMIT_SHA
+ARG GIT_TAG
+ENV NEXT_PUBLIC_GIT_TAG=$GIT_TAG
+
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
