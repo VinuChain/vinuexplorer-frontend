@@ -9,17 +9,18 @@ import config from 'configs/app';
 import type { ResourceError } from 'lib/api/resources';
 import useApiQuery from 'lib/api/useApiQuery';
 import useFetch from 'lib/hooks/useFetch';
-import useIssueUrl from 'lib/hooks/useIssueUrl';
 import { Link } from 'toolkit/chakra/link';
 import { Skeleton } from 'toolkit/chakra/skeleton';
-import { copy } from 'toolkit/utils/htmlEntities';
 import IconSvg from 'ui/shared/IconSvg';
 import { CONTENT_MAX_WIDTH } from 'ui/shared/layout/utils';
 import NetworkAddToWallet from 'ui/shared/NetworkAddToWallet';
 
 import FooterLinkItem from './FooterLinkItem';
 import IntTxsIndexingStatus from './IntTxsIndexingStatus';
-import getApiVersionUrl from './utils/getApiVersionUrl';
+
+// The upstream Blockscout release this fork is based on.
+const BLOCKSCOUT_UPSTREAM_VERSION = 'v5.3.1';
+const BLOCKSCOUT_UPSTREAM_URL = `https://github.com/blockscout/blockscout/tree/${ BLOCKSCOUT_UPSTREAM_VERSION }`;
 
 const MAX_LINKS_COLUMNS = 4;
 
@@ -32,9 +33,6 @@ const Footer = () => {
       enabled: !config.features.opSuperchain.isEnabled,
     },
   });
-  const apiVersionUrl = getApiVersionUrl(backendVersionData?.backend_version);
-  const issueUrl = useIssueUrl(backendVersionData?.backend_version);
-
   const BLOCKSCOUT_LINKS = [
     {
       icon: 'social/git' as const,
@@ -68,7 +66,8 @@ const Footer = () => {
     },
   ];
 
-  const frontendLink = config.UI.footer.frontendCommit || null;
+  const frontendSha = config.UI.footer.frontendCommit || null;
+  const backendSha = backendVersionData?.backend_version || null;
 
   const fetch = useFetch();
 
@@ -119,20 +118,23 @@ const Footer = () => {
           VinuExplorer is the official scanner for VinuChain, the world’s first determinably feeless, EVM L1.
         </Text>
         <Box mt={6} alignItems="start" textStyle="xs">
-          {apiVersionUrl && (
+          <Text>
+            Blockscout: <Link href={BLOCKSCOUT_UPSTREAM_URL} external noIcon>{ BLOCKSCOUT_UPSTREAM_VERSION }</Link>
+          </Text>
+          {frontendSha && (
             <Text>
-              Backend: <Link href={apiVersionUrl} external noIcon>{backendVersionData?.backend_version}</Link>
+              Frontend: <Link href={`https://github.com/VinuChain/vinuexplorer-frontend/commit/${ frontendSha }`} external noIcon>{ frontendSha }</Link>
             </Text>
           )}
-          {frontendLink && (
+          {backendSha && (
             <Text>
-              Deployed: {frontendLink}
+              Backend: <Link href={`https://github.com/VinuChain/vinuexplorer-backend/commit/${ backendSha }`} external noIcon>{ backendSha }</Link>
             </Text>
           )}
         </Box>
       </Box>
     );
-  }, [apiVersionUrl, backendVersionData?.backend_version, frontendLink]);
+  }, [backendSha, frontendSha]);
 
   const containerProps: HTMLChakraProps<'div'> = {
     as: 'footer',
