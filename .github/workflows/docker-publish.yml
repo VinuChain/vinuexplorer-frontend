@@ -37,3 +37,12 @@ jobs:
           build-args: |
             GIT_COMMIT_SHA=${{ env.SHORT_SHA }}
             GIT_TAG=${{ github.ref_name }}
+
+      - name: Trigger backend deployment
+        if: success()
+        run: |
+          gh workflow run deploy.yml \
+            --repo VinuChain/vinuexplorer-backend \
+            --ref master
+        env:
+          GH_TOKEN: ${{ secrets.BACKEND_DEPLOY_TOKEN }}
