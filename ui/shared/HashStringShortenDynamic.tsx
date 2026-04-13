@@ -32,7 +32,7 @@ interface Props extends BoxProps {
 
 const HashStringShortenDynamic = ({ hash, fontWeight = '400', noTooltip, tailLength = TAIL_LENGTH, as = 'span', tooltipInteractive, ...props }: Props) => {
   const elementRef = useRef<HTMLSpanElement>(null);
-  const [ displayedString, setDisplayedString ] = React.useState(hash);
+  const [ displayedString, setDisplayedString ] = React.useState(hash ?? '');
 
   const isFontFaceLoaded = useFontFaceObserver([
     { family: BODY_TYPEFACE, weight: String(fontWeight) as FontFace['weight'] },
@@ -91,6 +91,10 @@ const HashStringShortenDynamic = ({ hash, fontWeight = '400', noTooltip, tailLen
       resizeObserver.unobserve(document.body);
     };
   }, [ calculateString ]);
+
+  if (!hash) {
+    return null;
+  }
 
   const content = <chakra.span ref={ elementRef } as={ as } { ...props }>{ displayedString }</chakra.span>;
   const isTruncated = hash.length !== displayedString.length;
