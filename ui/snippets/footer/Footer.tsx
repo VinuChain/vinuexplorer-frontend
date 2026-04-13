@@ -123,12 +123,12 @@ const Footer = () => {
           </Text>
           {frontendSha && (
             <Text>
-              Frontend: <Link href={`https://github.com/VinuChain/vinuexplorer-frontend/commit/${ frontendSha }`} external noIcon>{ frontendSha }</Link>
+              Frontend: { frontendSha }
             </Text>
           )}
           {backendSha && (
             <Text>
-              Backend: <Link href={`https://github.com/VinuChain/vinuexplorer-backend/commit/${ backendSha }`} external noIcon>{ backendSha }</Link>
+              Backend: { backendSha }
             </Text>
           )}
         </Box>
