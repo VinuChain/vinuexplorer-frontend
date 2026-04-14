@@ -4,6 +4,9 @@ import { KEY_WORDS } from '../utils';
 
 export function monaco(): CspDev.DirectiveDescriptor {
   return {
+    'connect-src': [
+      'https://cdn.jsdelivr.net',
+    ],
     'script-src': [
       KEY_WORDS.BLOB,
       'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js',
