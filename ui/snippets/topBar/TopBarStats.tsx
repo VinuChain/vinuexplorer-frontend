@@ -1,8 +1,6 @@
 import { Flex, chakra } from '@chakra-ui/react';
 import React from 'react';
 
-import type { GasPriceInfo } from 'types/api/stats';
-
 import config from 'configs/app';
 import useApiQuery from 'lib/api/useApiQuery';
 import dayjs from 'lib/date/dayjs';
@@ -10,21 +8,12 @@ import useIsMobile from 'lib/hooks/useIsMobile';
 import { HOMEPAGE_STATS } from 'stubs/stats';
 import { Link } from 'toolkit/chakra/link';
 import { Skeleton } from 'toolkit/chakra/skeleton';
+import { enrichGasStats } from 'ui/shared/gas/enrichGasData';
 import GasInfoTooltip from 'ui/shared/gas/GasInfoTooltip';
 import GasPrice from 'ui/shared/gas/GasPrice';
 import TextSeparator from 'ui/shared/TextSeparator';
 
 import GetGasButton from './GetGasButton';
-
-// When the backend doesn't provide a USD fiat_price for gas (e.g. no CoinGecko integration),
-// compute it from the gwei price × coin price × 21,000 (standard transfer gas units).
-function enrichGasWithFiatPrice(gas: GasPriceInfo | null, coinPrice: string | null): GasPriceInfo | null {
-  if (!gas || gas.fiat_price !== null || !gas.price || !coinPrice) {
-    return gas;
-  }
-  const fiat = Number(gas.price) * 1e-9 * 21_000 * Number(coinPrice);
-  return { ...gas, fiat_price: fiat.toString() };
-}
 
 const TopBarStats = () => {
   const isMobile = useIsMobile();
@@ -61,18 +50,11 @@ const TopBarStats = () => {
     return <div/>;
   }
 
-  // Enrich gas prices with a computed USD fiat_price when the backend doesn't supply one.
-  const coinPrice = data?.coin_price ?? null;
-  const enrichedGasPrices = data?.gas_prices ? {
-    average: enrichGasWithFiatPrice(data.gas_prices.average, coinPrice),
-    fast: enrichGasWithFiatPrice(data.gas_prices.fast, coinPrice),
-    slow: enrichGasWithFiatPrice(data.gas_prices.slow, coinPrice),
-  } : null;
-  const enrichedData = data && enrichedGasPrices ? { ...data, gas_prices: enrichedGasPrices } : data;
+  const enrichedData = data ? enrichGasStats(data, dataUpdatedAt) : data;
 
   const hasNativeCoinPrice = data?.coin_price && !config.UI.nativeCoinPrice.isHidden;
   const hasSecondaryCoinPrice = data?.secondary_coin_price && config.chain.secondaryCoin.symbol && (hasNativeCoinPrice ? !isMobile : true);
-  const hasGasInfo = enrichedGasPrices && enrichedGasPrices.average !== null && config.features.gasTracker.isEnabled && !isMobile;
+  const hasGasInfo = enrichedData?.gas_prices && enrichedData.gas_prices.average !== null && config.features.gasTracker.isEnabled && !isMobile;
 
   return (
     <>
@@ -111,7 +93,7 @@ const TopBarStats = () => {
               <chakra.span color="text.secondary">Gas </chakra.span>
               <GasInfoTooltip data={ enrichedData } dataUpdatedAt={ dataUpdatedAt } placement={ !data?.coin_price ? 'bottom-start' : undefined }>
                 <Link>
-                  <GasPrice data={ enrichedGasPrices?.average ?? null }/>
+                  <GasPrice data={ enrichedData.gas_prices?.average ?? null }/>
                 </Link>
               </GasInfoTooltip>
             </Skeleton>

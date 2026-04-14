@@ -16,6 +16,7 @@ import GasTrackerChart from 'ui/gasTracker/GasTrackerChart';
 import GasTrackerFaq from 'ui/gasTracker/GasTrackerFaq';
 import GasTrackerNetworkUtilization from 'ui/gasTracker/GasTrackerNetworkUtilization';
 import GasTrackerPrices from 'ui/gasTracker/GasTrackerPrices';
+import { enrichGasStats } from 'ui/shared/gas/enrichGasData';
 import GasInfoUpdateTimer from 'ui/shared/gas/GasInfoUpdateTimer';
 import NativeTokenIcon from 'ui/shared/NativeTokenIcon';
 import PageTitle from 'ui/shared/Page/PageTitle';
@@ -33,6 +34,7 @@ const GasTracker = () => {
   }
 
   const isLoading = isPlaceholderData;
+  const enrichedData = data ? enrichGasStats(data, dataUpdatedAt) : data;
 
   const titleSecondRow = (
     <Flex
@@ -45,38 +47,38 @@ const GasTracker = () => {
       rowGap={ 1 }
       flexDir={{ base: 'column', lg: 'row' }}
     >
-      { typeof data?.network_utilization_percentage === 'number' &&
-        <GasTrackerNetworkUtilization percentage={ data.network_utilization_percentage } isLoading={ isLoading }/> }
-      { data?.gas_price_updated_at && (
+      { typeof enrichedData?.network_utilization_percentage === 'number' &&
+        <GasTrackerNetworkUtilization percentage={ enrichedData.network_utilization_percentage } isLoading={ isLoading }/> }
+      { enrichedData?.gas_price_updated_at && (
         <Skeleton loading={ isLoading } whiteSpace="pre" display="flex" alignItems="center">
           <span>Last updated </span>
-          <chakra.span color="text.secondary">{ dayjs(data.gas_price_updated_at).format('DD MMM, HH:mm:ss') }</chakra.span>
-          { data.gas_prices_update_in !== 0 && (
+          <chakra.span color="text.secondary">{ dayjs(enrichedData.gas_price_updated_at).format('DD MMM, HH:mm:ss') }</chakra.span>
+          { enrichedData.gas_prices_update_in !== 0 && (
             <GasInfoUpdateTimer
               key={ dataUpdatedAt }
               startTime={ dataUpdatedAt }
-              duration={ data.gas_prices_update_in }
+              duration={ enrichedData.gas_prices_update_in }
               ml={ 2 }
             />
           ) }
         </Skeleton>
       ) }
-      { data?.coin_price && (
+      { enrichedData?.coin_price && (
         <Skeleton loading={ isLoading } ml={{ base: 0, lg: 'auto' }} whiteSpace="pre" display="flex" alignItems="center">
           <NativeTokenIcon mr={ 2 } boxSize={ 6 }/>
           <chakra.span color="text.secondary">{ config.chain.currency.symbol }</chakra.span>
-          <span> ${ Number(data.coin_price).toLocaleString(undefined, { maximumFractionDigits: 2 }) }</span>
+          <span> ${ Number(enrichedData.coin_price).toLocaleString(undefined, { maximumFractionDigits: 2 }) }</span>
         </Skeleton>
       ) }
     </Flex>
   );
 
   const snippets = (() => {
-    if (!isPlaceholderData && data?.gas_prices?.slow === null && data?.gas_prices.average === null && data.gas_prices.fast === null) {
+    if (!isPlaceholderData && enrichedData?.gas_prices?.slow === null && enrichedData?.gas_prices.average === null && enrichedData?.gas_prices.fast === null) {
       return <Alert status="warning">No recent data available</Alert>;
     }
 
-    return data?.gas_prices ? <GasTrackerPrices prices={ data.gas_prices } isLoading={ isLoading }/> : null;
+    return enrichedData?.gas_prices ? <GasTrackerPrices prices={ enrichedData.gas_prices } isLoading={ isLoading }/> : null;
   })();
 
   const faq = config.meta.seo.enhancedDataEnabled ? <GasTrackerFaq/> : null;
