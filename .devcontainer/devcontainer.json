@@ -5,12 +5,7 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
-				"terminal.integrated.defaultProfile.linux": "zsh", 
-				"terminal.integrated.profiles.linux": {
-					"zsh": {
-						"path": "/bin/zsh"
-					}
-				}
+				"terminal.integrated.defaultProfile.linux": "bash"
 			},
 		  "extensions": [
 				"streetsidesoftware.code-spell-checker",
@@ -24,7 +19,7 @@
 		}
 	},
 	"features": {
-		"ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {
+		"ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
 			"plugins": "npm",
 			"omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions"
 		}
