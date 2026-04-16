@@ -48,11 +48,14 @@ const Icon = (props: IconProps) => {
     borderRadius: props.token.type === 'ERC-20' ? 'full' : 'base',
   };
 
+  const vinuchainListsUrl = `https://raw.githubusercontent.com/VinuChain/vinuchain-lists/main/tokens/${ props.token.address_hash }/${ props.token.address_hash }.png`;
+  const iconSrc = props.token.icon_url ?? vinuchainListsUrl;
+
   return (
     <EntityBase.Icon
       { ...styles }
       className={ props.className }
-      src={ props.token.icon_url ?? undefined }
+      src={ iconSrc }
       alt={ `${ props.token.name || 'token' } logo` }
       fallback={ <TokenLogoPlaceholder/> }
       shield={ props.shield ?? (props.chain ? { src: props.chain.logo } : undefined) }
