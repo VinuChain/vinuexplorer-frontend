@@ -95,6 +95,7 @@ const TokensTableItem = ({
                 isLoading={ isLoading }
                 jointSymbol
                 noCopy
+                w="auto"
                 textStyle="sm"
                 fontWeight="700"
               />
