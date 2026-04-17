@@ -14,6 +14,7 @@ import { Tag } from 'toolkit/chakra/tag';
 import AddressAddToWallet from 'ui/shared/address/AddressAddToWallet';
 import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import TokenEntity from 'ui/shared/entities/token/TokenEntity';
+import TokenSocialLinks from 'ui/token/TokenSocialLinks';
 import ListItemMobile from 'ui/shared/ListItemMobile/ListItemMobile';
 import SimpleValue from 'ui/shared/value/SimpleValue';
 import { DEFAULT_ACCURACY_USD } from 'ui/shared/value/utils';
@@ -78,6 +79,11 @@ const TokensListItem = ({
             textStyle="sm"
             fontWeight="700"
           />
+          <TokenSocialLinks
+            socials={ 'socials' in token ? token.socials : undefined }
+            fields={ [ 'website', 'twitter', 'telegram', 'coingecko', 'coinmarketcap' ] }
+            boxSize={ 4 }
+          />
           <Flex ml={ 3 } flexShrink={ 0 } columnGap={ 1 }>
             <Tag loading={ isLoading }>{ getTokenTypeName(type) }</Tag>
             { bridgedChainTag && <Tag loading={ isLoading }>{ bridgedChainTag }</Tag> }
@@ -92,7 +98,6 @@ const TokensListItem = ({
           address={{ hash: addressHash, filecoin: { robust: filecoinRobustAddress } }}
           isLoading={ isLoading }
           truncation="constant"
-          link={{ variant: 'secondary' }}
           noIcon
         />
         <AddressAddToWallet token={ token } isLoading={ isLoading }/>

@@ -16,6 +16,7 @@ import AddressAddToWallet from 'ui/shared/address/AddressAddToWallet';
 import type { EntityProps as AddressEntityProps } from 'ui/shared/entities/address/AddressEntity';
 import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import TokenEntity from 'ui/shared/entities/token/TokenEntity';
+import TokenSocialLinks from 'ui/token/TokenSocialLinks';
 import SimpleValue from 'ui/shared/value/SimpleValue';
 import { DEFAULT_ACCURACY_USD } from 'ui/shared/value/utils';
 
@@ -87,15 +88,22 @@ const TokensTableItem = ({
             { getItemIndex(index, page) }
           </Skeleton>
           <Flex overflow="hidden" flexDir="column" rowGap={ 2 }>
-            <TokenEntity
-              token={ token }
-              chain={ chainInfo }
-              isLoading={ isLoading }
-              jointSymbol
-              noCopy
-              textStyle="sm"
-              fontWeight="700"
-            />
+            <Flex alignItems="center" columnGap={ 2 }>
+              <TokenEntity
+                token={ token }
+                chain={ chainInfo }
+                isLoading={ isLoading }
+                jointSymbol
+                noCopy
+                textStyle="sm"
+                fontWeight="700"
+              />
+              <TokenSocialLinks
+                socials={ 'socials' in token ? token.socials : undefined }
+                fields={ [ 'website', 'twitter', 'telegram', 'coingecko', 'coinmarketcap' ] }
+                boxSize={ 4 }
+              />
+            </Flex>
             <Flex columnGap={ 2 } py="5px" alignItems="center">
               <AddressEntity
                 address={ tokenAddress }
@@ -103,7 +111,6 @@ const TokensTableItem = ({
                 noIcon
                 textStyle="sm"
                 fontWeight={ 500 }
-                link={{ variant: 'secondary' }}
               />
               <AddressAddToWallet
                 token={ token }

@@ -102,6 +102,7 @@ export interface TokenSocials {
   youtube?: string;
   instagram?: string;
   coinmarketcap?: string;
+  coingecko?: string;
 }
 
 export type TokenVerifiedInfo = Omit<TokenInfoApplication, 'id' | 'status'>;

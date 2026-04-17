@@ -10,6 +10,8 @@ import IconSvg from 'ui/shared/IconSvg';
 
 interface Props {
   socials: TokenSocials | null | undefined;
+  fields?: ReadonlyArray<keyof TokenSocials>;
+  boxSize?: number;
 }
 
 type SocialEntry = {
@@ -31,14 +33,16 @@ const SOCIAL_CONFIG: Array<SocialEntry> = [
   { key: 'facebook', label: 'Facebook', icon: 'social/facebook_filled' },
   { key: 'reddit', label: 'Reddit', icon: 'social/reddit_filled' },
   { key: 'coinmarketcap', label: 'CoinMarketCap', icon: 'social/coinmarketcap' },
+  { key: 'coingecko', label: 'CoinGecko', icon: 'social/coingecko' },
 ];
 
-const TokenSocialLinks = ({ socials }: Props) => {
+const TokenSocialLinks = ({ socials, fields, boxSize = 5 }: Props) => {
   if (!socials) {
     return null;
   }
 
-  const items = SOCIAL_CONFIG.filter(({ key }) => Boolean(socials[key]));
+  const config = fields ? SOCIAL_CONFIG.filter(({ key }) => fields.includes(key)) : SOCIAL_CONFIG;
+  const items = config.filter(({ key }) => Boolean(socials[key]));
 
   if (items.length === 0) {
     return null;
@@ -60,7 +64,7 @@ const TokenSocialLinks = ({ socials }: Props) => {
         return (
           <Tooltip key={ key } content={ label }>
             <Link external href={ href } noIcon display="flex" alignItems="center" flexShrink={ 0 } color="icon.secondary" _hover={{ color: 'link.primary' }}>
-              <IconSvg name={ icon } boxSize={ 5 }/>
+              <IconSvg name={ icon } boxSize={ boxSize }/>
             </Link>
           </Tooltip>
         );
