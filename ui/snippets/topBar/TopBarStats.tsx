@@ -18,7 +18,7 @@ import GetGasButton from './GetGasButton';
 const TopBarStats = () => {
   const isMobile = useIsMobile();
 
-  const { data, isPlaceholderData, isError, refetch, dataUpdatedAt } = useApiQuery('general:stats', {
+  const { data, isPlaceholderData, refetch, dataUpdatedAt } = useApiQuery('general:stats', {
     queryOptions: {
       placeholderData: HOMEPAGE_STATS,
       refetchOnMount: false,
@@ -45,10 +45,6 @@ const TopBarStats = () => {
       window.clearTimeout(timeoutId);
     };
   }, [ isPlaceholderData, data?.gas_price_updated_at, dataUpdatedAt, data?.gas_prices_update_in, refetch ]);
-
-  if (isError) {
-    return <div/>;
-  }
 
   const enrichedData = data ? enrichGasStats(data, dataUpdatedAt) : data;
 
