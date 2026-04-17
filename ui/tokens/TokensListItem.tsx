@@ -117,7 +117,7 @@ const TokensListItem = ({
       ) }
       { marketCap && (
         <HStack gap={ 3 }>
-          <Skeleton loading={ isLoading } textStyle="sm" fontWeight={ 500 }>On-chain market cap</Skeleton>
+          <Skeleton loading={ isLoading } textStyle="sm" fontWeight={ 500 }>Market cap</Skeleton>
           <SimpleValue
             value={ BigNumber(marketCap) }
             loading={ isLoading }

@@ -1,55 +1,63 @@
 import React from 'react';
 
 import type { FormSubmitResult } from 'ui/publicTags/submit/types';
+import type { PublicTagType } from 'types/api/addressMetadata';
 
+import appConfig from 'configs/app';
 import useApiQuery from 'lib/api/useApiQuery';
 import { ContentLoader } from 'toolkit/components/loaders/ContentLoader';
 import PublicTagsSubmitForm from 'ui/publicTags/submit/PublicTagsSubmitForm';
 import PublicTagsSubmitResult from 'ui/publicTags/submit/PublicTagsSubmitResult';
-import DataFetchAlert from 'ui/shared/DataFetchAlert';
 import PageTitle from 'ui/shared/Page/PageTitle';
 import useProfileQuery from 'ui/snippets/auth/useProfileQuery';
 
-type Screen = 'form' | 'result' | 'initializing' | 'error';
+// Fallback tag types when the metadata service is not configured.
+const DEFAULT_TAG_TYPES: Array<PublicTagType> = [
+  { id: 'name', type: 'name', description: 'Name or label for the address' },
+  { id: 'generic', type: 'generic', description: 'Generic tag' },
+  { id: 'classifier', type: 'classifier', description: 'Address classifier (exchange, bridge, etc.)' },
+  { id: 'information', type: 'information', description: 'Informational tag' },
+  { id: 'note', type: 'note', description: 'Note' },
+  { id: 'protocol', type: 'protocol', description: 'Protocol or dApp tag' },
+];
 
 const PublicTagsSubmit = () => {
-
-  const [ screen, setScreen ] = React.useState<Screen>('initializing');
   const [ submitResult, setSubmitResult ] = React.useState<FormSubmitResult>();
 
   const profileQuery = useProfileQuery();
-  const configQuery = useApiQuery('metadata:public_tag_types', { queryOptions: { enabled: !profileQuery.isLoading } });
-
-  React.useEffect(() => {
-    if (!configQuery.isPending) {
-      setScreen(configQuery.isError ? 'error' : 'form');
-    }
-  }, [ configQuery.isError, configQuery.isPending ]);
+  const configQuery = useApiQuery('metadata:public_tag_types', {
+    queryOptions: {
+      enabled: !profileQuery.isLoading && appConfig.features.addressMetadata.isEnabled,
+    },
+  });
 
   const handleFormSubmitResult = React.useCallback((result: FormSubmitResult) => {
     setSubmitResult(result);
-    setScreen('result');
   }, []);
 
-  const content = (() => {
-    switch (screen) {
-      case 'initializing':
-        return <ContentLoader/>;
-      case 'error':
-        return <DataFetchAlert/>;
-      case 'form':
-        return <PublicTagsSubmitForm config={ configQuery.data } onSubmitResult={ handleFormSubmitResult } userInfo={ profileQuery.data }/>;
-      case 'result':
-        return <PublicTagsSubmitResult data={ submitResult }/>;
-      default:
-        return null;
-    }
-  })();
+  const tagTypes = configQuery.data?.tagTypes ?? DEFAULT_TAG_TYPES;
+
+  if (profileQuery.isLoading || (appConfig.features.addressMetadata.isEnabled && configQuery.isPending)) {
+    return (
+      <>
+        <PageTitle title="Request a public tag/label"/>
+        <ContentLoader/>
+      </>
+    );
+  }
 
   return (
     <>
       <PageTitle title="Request a public tag/label"/>
-      { content }
+      { submitResult ? (
+        <PublicTagsSubmitResult data={ submitResult }/>
+      ) : (
+        <PublicTagsSubmitForm
+          config={{ tagTypes }}
+          onSubmitResult={ handleFormSubmitResult }
+          userInfo={ profileQuery.data }
+        />
+      ) }
     </>
   );
 };

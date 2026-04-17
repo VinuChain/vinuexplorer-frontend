@@ -67,11 +67,11 @@ const TokensTable = ({ items, page, isLoading, sorting, setSorting, top }: Props
               sortValue={ sorting }
               onSortToggle={ sort }
             >
-              On-chain market cap
+              Market cap
             </TableColumnHeaderSortable>
           ) : (
             <TableColumnHeader isNumeric width="20%">
-              On-chain market cap
+              Market cap
             </TableColumnHeader>
           ) }
           { hasSorting ? (
