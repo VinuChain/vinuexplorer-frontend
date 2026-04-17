@@ -25,6 +25,7 @@ import IconSvg from 'ui/shared/IconSvg';
 import NetworkExplorers from 'ui/shared/NetworkExplorers';
 import PageTitle from 'ui/shared/Page/PageTitle';
 
+import TokenSocialLinks from './TokenSocialLinks';
 import TokenVerifiedInfo from './TokenVerifiedInfo';
 
 const PREDEFINED_TAG_PRIORITY = 100;
@@ -118,6 +119,7 @@ const TokenPageTitle = ({ tokenQuery, addressQuery, verifiedInfoQuery, hash }: P
       { addressQuery.data && <AddressQrCode hash={ addressQuery.data.hash } isLoading={ isLoading }/> }
       <AccountActionsMenu isLoading={ isLoading }/>
       <Flex ml={{ base: 0, lg: 'auto' }} columnGap={ 2 } flexGrow={{ base: 1, lg: 0 }}>
+        <TokenSocialLinks socials={ tokenQuery.data?.socials }/>
         <TokenVerifiedInfo verifiedInfoQuery={ verifiedInfoQuery }/>
         <NetworkExplorers type="token" pathParam={ addressHash } ml={{ base: 'auto', lg: 0 }}/>
       </Flex>

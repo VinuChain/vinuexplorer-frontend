@@ -18,6 +18,7 @@ export interface TokenInfo<T extends TokenType = TokenType> {
   icon_url: string | null;
   circulating_market_cap: string | null;
   reputation: TokenReputation | null;
+  socials?: TokenSocials | null;
   // bridged token fields
   is_bridged?: boolean | null;
   bridge_type?: string | null;
@@ -87,6 +88,21 @@ export interface TokenInventoryResponse {
 export type TokenInventoryPagination = {
   unique_token: number;
 };
+
+export interface TokenSocials {
+  website?: string;
+  twitter?: string;
+  telegram?: string;
+  discord?: string;
+  github?: string;
+  medium?: string;
+  linkedin?: string;
+  facebook?: string;
+  reddit?: string;
+  youtube?: string;
+  instagram?: string;
+  coinmarketcap?: string;
+}
 
 export type TokenVerifiedInfo = Omit<TokenInfoApplication, 'id' | 'status'>;
 
