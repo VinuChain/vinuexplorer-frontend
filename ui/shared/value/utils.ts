@@ -24,9 +24,22 @@ export const formatBnValue = ({ value, accuracy, prefix, postfix, overflowed }: 
 
   const formattedValue = value.dp(accuracy).toFormat();
 
-  return formattedValue === '0' && !value.isEqualTo(ZERO) && !overflowed ?
-    `<${ thinsp }${ prefix ?? '' }0.${ '0'.repeat(accuracy - 1) }1${ postfix ?? '' }` :
-    `${ fullPrefix }${ formattedValue }${ postfix ?? '' }`;
+  if (formattedValue === '0' && !value.isEqualTo(ZERO) && !overflowed) {
+    // Value is non-zero but rounds to 0 at the given accuracy.
+    // Show 4 significant figures so users see the real price (e.g. $0.000000001139).
+    const num = value.abs().toNumber();
+    if (num > 0 && isFinite(num)) {
+      const exp = Math.floor(Math.log10(num));
+      const sigFigDecimals = Math.max(accuracy, 4 - exp - 1);
+      const sigFigFormatted = value.dp(sigFigDecimals).toFormat();
+      if (sigFigFormatted !== '0') {
+        return `${ fullPrefix }${ sigFigFormatted }${ postfix ?? '' }`;
+      }
+    }
+    return `<${ thinsp }${ prefix ?? '' }0.${ '0'.repeat(accuracy - 1) }1${ postfix ?? '' }`;
+  }
+
+  return `${ fullPrefix }${ formattedValue }${ postfix ?? '' }`;
 };
 
 export const DEFAULT_ACCURACY = 8;
